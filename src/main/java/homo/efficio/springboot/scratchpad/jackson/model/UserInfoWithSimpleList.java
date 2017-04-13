@@ -14,8 +14,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class UserInfo {
+public class UserInfoWithSimpleList extends UserInfo {
 
-    protected String id;
+    private List<String> emails;
+
+    public UserInfoWithSimpleList(String id, List<String> emails) {
+        super(id);
+        this.emails = emails;
+    }
 }

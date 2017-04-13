@@ -14,8 +14,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class UserInfo {
+public class UserInfoWithObjectArray extends UserInfo {
 
-    protected String id;
+    private Address[] addresses;
+
+    public UserInfoWithObjectArray(String id, Address[] addresses) {
+        super(id);
+        this.addresses = addresses;
+    }
 }

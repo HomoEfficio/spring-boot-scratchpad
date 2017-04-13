@@ -1,0 +1,69 @@
+<html>
+<body>
+<button id='tester'>JSON Request Test</button>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+<script src="./jquery.min.js"></script>
+<script>
+var tester = document.getElementById('tester');
+
+var jsonData = {
+    site: "m.abc.co.kr",
+    url: "http://m.abc.co.kr/MW/Product/productBasicInfo.mall?prdNo=1699572118",
+    NaPm: "ct=j1d2w2kg|ci=bb63afd1b872873f121291da07fbc0ba0f7cc86f|tr=ligh|sn=17703|hk=6b2af0f43926b3a341bf885b7cbd69148ef431e4",
+    utm_term: "",
+    utm_campaign: "%B3%D7%C0%CC%B9%F6m_%B0%A1%B0%DD%BA%F1%B1%B3+%B1%E2%BA%BB",
+    utm_source: "%B3%D7%C0%CC%B9%F6m_PCS",
+    utm_medium: "%B0%A1%B0%DD%BA%F1%B1%B3",
+    ref: "http://www.abc.co.kr/connect/Gateway.mall?method=Xsite",
+    prdNo: "1699572118",
+    tid: "1000000061",
+//        NaPm: "ct%3Dj1d2w2kg%7Cci%3Dbb63afd1b872873f121291da07fbc0ba0f7cc86f%7Ctr%3Dligh%7Csn%3D17703%7Chk%3D6b2af0f43926b3a341bf885b7cbd69148ef431e4",
+    mid: "3364941458634056067",
+    items: [
+        {
+            id: "1699572118",
+            c1: "해외직구",
+            c2: "여성패션잡화",
+            c3: "여성화",
+            c4: "샌들/웨지힐",
+            currency: "KRW",
+            title: "%EC%8A%A4%ED%83%88%EB%9F%AC%EC%8A%A4%5B505233727%5D%20Michael%20Kors%5B%EB%A7%88%EC%9D%B4%ED%81%B4%EC%BD%94%EC%96%B4%EC%8A%A4%5D%20%EC%97%AC%EC%84%B1%EC%A0%9C%ED%92%88%20MICHAEL%20Michael%20Kors%20Chandler%20Wedge",
+            price: 236690,
+            image: "http://i.abc.com/ex_t/R/300x300/1/90/1/src/pd/17/5/7/2/1/1/8/cACMs/1699572118_B.jpg",
+            options: [
+                {
+                    stck_no: "6522593622",
+                    opt_no: "1:1,2:1",
+                    name: "6 / M",
+                    qty: 1
+                }
+            ],
+            count: 1,
+            bc1: "",
+            brand: "",
+        }
+    ],
+    uid: "14648776635866293965483",
+    guid: "14648776635866293965483",
+    action: "basket",
+    b: "eyJ1c2VyIjp7ImJpcnRoeWVhciI6IjE5NjUiLCJnZW5kZXIiOiJGIn19",
+    z: "385182",
+    callback: "methodName"
+};
+
+tester.addEventListener('click', function(e) {
+    (function($) {
+        $.ajax({
+            url: 'http://localhost:8080/jackson/object-list/data-binder',
+            contentType: 'application/json',
+//                method: 'POST',
+            method: 'GET',
+            crossDomain: true,
+//                data: JSON.stringify(jsonData)  // for POST
+            data: jsonData
+        });
+    })(jQuery);
+});
+</script>
+</body>
+</html>

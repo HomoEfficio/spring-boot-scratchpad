@@ -2,6 +2,7 @@ package homo.efficio.springboot.scratchpad.jackson.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -9,6 +10,8 @@ import lombok.Setter;
  *         created on 2017. 4. 11.
  */
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Address {
 
