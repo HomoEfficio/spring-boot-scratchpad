@@ -53,14 +53,34 @@ var jsonData = {
 
 tester.addEventListener('click', function(e) {
     (function($) {
+//        $.ajax({
+//            url: 'http://localhost:8080/jackson/object-list/data-binder',
+//            contentType: 'application/json',
+////                method: 'POST',
+//            method: 'GET',
+//            crossDomain: true,
+////                data: JSON.stringify(jsonData)  // for POST
+//            data: jsonData
+//        });
+
+
         $.ajax({
             url: 'http://localhost:8080/jackson/object-list/data-binder',
             contentType: 'application/json',
-//                method: 'POST',
             method: 'GET',
             crossDomain: true,
-//                data: JSON.stringify(jsonData)  // for POST
-            data: jsonData
+            data: {
+                id: "321",
+                items: [
+                    {
+                        id: "abc987",
+                        count: 3
+                    }
+                ],
+                emails: ['abc@abc.com', 'sdf@sdf.com']
+            }
+        }).done(function() {
+            // 성공 시 처리
         });
     })(jQuery);
 });

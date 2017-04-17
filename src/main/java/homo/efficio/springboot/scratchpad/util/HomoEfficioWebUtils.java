@@ -1,10 +1,16 @@
 package homo.efficio.springboot.scratchpad.util;
 
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author homo.efficio@gmail.com
@@ -15,6 +21,57 @@ public class HomoEfficioWebUtils {
     // TODO: 배열 값이 포함된 케이스 처리 보완 필요
 
     private static final String FINAL_STRING = "final String ";
+
+    /**
+     * bindingResult에 포함되어 있는 바인딩 에러 발생 필드 이름들을 ','로 Join한 문자열 반환
+     *
+     * @param bindingResult
+     * @return
+     */
+    public static String getErrorFieldNames(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+                .map(v -> v.getField())
+                .collect(Collectors.joining(","));
+    }
+
+    /**
+     * jQuery.ajax() 내에서 data 항목에 JSON으로 작성된 데이터가
+     * GET 방식으로 넘어올 때 Spring이 바인딩 해주지 못하는 부분을 보완
+     *
+     * @param parameterMap  request의 파라미터맵
+     * @param dto           바인딩 할 DTO의 클래스 리터럴
+     * @param <T>           바인딩 할 DTO의 타입
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    public static <T> T getDTOFromParamMap(Map<String, String[]> parameterMap, Class<T> dto) throws IllegalAccessException, InstantiationException {
+
+        final MutablePropertyValues sourceProps = getPropsFrom(parameterMap);
+
+        T targetDTO = dto.newInstance();
+        DataBinder binder = new DataBinder(targetDTO);
+        binder.bind(sourceProps);
+
+        return targetDTO;
+    }
+
+    private static MutablePropertyValues getPropsFrom(Map<String, String[]> parameterMap) {
+        final MutablePropertyValues mpvs = new MutablePropertyValues();
+
+        parameterMap.forEach(
+                (k, v) -> {
+                    String dotKey =
+                            k.replaceAll("\\[]", "")
+                             .replaceAll("\\[(\\D+)", ".$1")
+                             .replaceAll("]\\[(\\D)", ".$1")
+                             .replaceAll("(\\.\\w+)]", "$1");
+                    mpvs.addPropertyValue(dotKey, v);
+                }
+        );
+
+        return mpvs;
+    }
 
     public static List<String> getParamDefinitionCodesFromUrlString(String urlString) throws Exception {
 

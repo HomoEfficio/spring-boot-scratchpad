@@ -1,5 +1,7 @@
 package homo.efficio.springboot.scratchpad.util;
 
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -18,6 +20,34 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class HomoEfficioWebUtilsTest {
 
     private static final String FINAL_STRING = "final String ";
+
+    @Test
+    public void object인덱스형_key를_dot형으로_변환() throws Exception {
+
+        String k = "items[0][options][1][a][12][b][abc][c][1234][c1][33][_1][___][99][a33][b3][aa3]";
+
+        String result =
+                k.replaceAll("\\[]", "")
+                 .replaceAll("\\[(\\D+)", ".$1")
+                 .replaceAll("]\\[(\\D)", ".$1")
+                 .replaceAll("(\\.\\w+)]", "$1");
+
+        Assert.assertThat(result, Matchers.is("items[0].options[1].a[12].b.abc.c[1234].c1[33]._1.___[99].a33.b3.aa3"));
+    }
+
+    @Test
+    public void 배열형_key를_dot형으로_변환() throws Exception {
+
+        String k = "items[0][options][catalog][1][mini][]";
+
+        String result =
+                k.replaceAll("\\[]", "")
+                 .replaceAll("\\[(\\D+)", ".$1")
+                 .replaceAll("]\\[(\\D)", ".$1")
+                 .replaceAll("(\\.\\w+)]", "$1");
+
+        Assert.assertThat(result, Matchers.is("items[0].options.catalog[1].mini"));
+    }
 
     @Test
     public void URL_String에서_ParamKey_ParamValue_정의문_생성_테스트() throws Exception {
