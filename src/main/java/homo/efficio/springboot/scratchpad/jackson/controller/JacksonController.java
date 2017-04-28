@@ -1,10 +1,8 @@
 package homo.efficio.springboot.scratchpad.jackson.controller;
 
-import homo.efficio.springboot.scratchpad.jackson.model.UserInfo;
-import homo.efficio.springboot.scratchpad.jackson.model.UserInfoWithObjectArray;
-import homo.efficio.springboot.scratchpad.jackson.model.UserInfoWithObjectList;
-import homo.efficio.springboot.scratchpad.jackson.model.UserInfoWithSimpleList;
+import homo.efficio.springboot.scratchpad.jackson.model.*;
 import homo.efficio.springboot.scratchpad.jackson.util.DataBinderUtil;
+import homo.efficio.springboot.scratchpad.util.HomoEfficioWebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -79,5 +77,25 @@ public class JacksonController {
         }
 
         return ResponseEntity.ok(userInfoWithObjectList);
+    }
+
+//    @RequestMapping(value = "/data-binder", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    public ResponseEntity<SampleDTO> saveSampleEntity(HttpServletRequest request, SampleDTO dto) {
+//        return ResponseEntity.ok(dto);
+//    }
+
+    @RequestMapping(value = "/data-binder", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SampleDTO> saveSampleEntity(HttpServletRequest request) {
+
+        SampleDTO dto = null;
+        try {
+            dto = HomoEfficioWebUtils.getDTOFromParamMap(request.getParameterMap(), SampleDTO.class);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok(dto);
     }
 }

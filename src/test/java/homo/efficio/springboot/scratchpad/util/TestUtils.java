@@ -46,4 +46,9 @@ public class TestUtils {
 
 
     }
+
+    @Test
+    public void xx() {
+        System.out.println("Handling servlet request parameter names including square brackets".length());
+    }
 }

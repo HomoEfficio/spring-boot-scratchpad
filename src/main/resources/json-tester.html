@@ -64,23 +64,52 @@ tester.addEventListener('click', function(e) {
 //        });
 
 
+//        $.ajax({
+//            url: 'http://localhost:8080/jackson/object-list/data-binder',
+//            contentType: 'application/json',
+//            method: 'GET',
+//            crossDomain: true,
+//            data: {
+//                id: "321",
+//                items: [
+//                    {
+//                        id: "abc987",
+//                        count: 3
+//                    }
+//                ],
+//                emails: ['abc@abc.com', 'sdf@sdf.com']
+//            }
+//        }).done(function() {
+//            // 성공 시 처리
+//        });
+
+
+
         $.ajax({
-            url: 'http://localhost:8080/jackson/object-list/data-binder',
+            url: 'http://localhost:8080/jackson/data-binder',
             contentType: 'application/json',
             method: 'GET',
             crossDomain: true,
             data: {
                 id: "321",
-                items: [
+                addresses: [
                     {
-                        id: "abc987",
-                        count: 3
+                        city: "Seoul",
+                        goo: "Peace",
+                        street: "Forever",
+                        number: 3
+                    },
+                    {
+                        city: "Incheon",
+                        goo: "Hapiness",
+                        street: "Together",
+                        number: 33
                     }
                 ],
                 emails: ['abc@abc.com', 'sdf@sdf.com']
             }
-        }).done(function() {
-            // 성공 시 처리
+        }).done(function(msg) {
+            // Do something with msg
         });
     })(jQuery);
 });

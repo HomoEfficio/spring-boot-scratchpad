@@ -1,15 +1,14 @@
 package homo.efficio.springboot.scratchpad.util;
 
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 
+import javax.servlet.ServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +20,39 @@ public class HomoEfficioWebUtils {
     // TODO: 배열 값이 포함된 케이스 처리 보완 필요
 
     private static final String FINAL_STRING = "final String ";
+
+    public static Map<String, Object> getParametersStartingWith(ServletRequest request, String prefix) {
+        Assert.notNull(request, "Request must not be null");
+        Enumeration<String> paramNames = request.getParameterNames();
+        Map<String, Object> params = new TreeMap<>();
+        if (prefix == null) {
+            prefix = "";
+        }
+        while (paramNames != null && paramNames.hasMoreElements()) {
+            String paramName = paramNames.nextElement();
+            if ("".equals(prefix) || paramName.startsWith(prefix)) {
+                String unprefixed = paramName.substring(prefix.length());
+                String[] values = request.getParameterValues(paramName);
+                if (values == null || values.length == 0) {
+                    // Do nothing, no values found at all.
+                }
+                else if (values.length > 1) {
+                    params.put(getPropertyKeyFromParamName(unprefixed), values);
+                }
+                else {
+                    params.put(getPropertyKeyFromParamName(unprefixed), values[0]);
+                }
+            }
+        }
+        return params;
+    }
+
+    private static String getPropertyKeyFromParamName(String paramName) {
+        return paramName.replaceAll("\\[]", "")
+                .replaceAll("\\[(\\D+)", ".$1")
+                .replaceAll("]\\[(\\D)", ".$1")
+                .replaceAll("(\\.\\w+)]", "$1");
+    }
 
     /**
      * bindingResult에 포함되어 있는 바인딩 에러 발생 필드 이름들을 ','로 Join한 문자열 반환

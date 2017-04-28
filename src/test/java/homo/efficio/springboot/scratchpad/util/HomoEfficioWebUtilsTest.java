@@ -5,12 +5,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author homo.efficio@gmail.com
@@ -20,6 +25,41 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class HomoEfficioWebUtilsTest {
 
     private static final String FINAL_STRING = "final String ";
+
+    @Test
+    public void convertSquareBracketToDot() {
+        String[] strArr1 = new String[] {"111", "222"};
+        String[] strArr2 = new String[] {"333", "444"};
+        String[] strArr3 = new String[] {"With", "l2"};
+        String[] strArr4 = new String[] {"l4", "array"};
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("simple1", "simpleValue1");
+        params.put("l1dot.l2", "dot");
+        params.put("l1[l2]", "squareBracket");
+        params.put("l1arr[]", strArr1);
+        params.put("l1[l2arr][]", strArr2);
+        params.put("l1arr[0][l2]", "Withl2");
+        params.put("l1arr[0][l2arr][]", strArr3);
+        params.put("l1arr[0][l2][l3]", "Withl3");
+        params.put("l1arr[0][l2][l3arr][0][l4]", "Withl4");
+        params.put("l1arr[0][l2][l3arr][0][l4arr][]", strArr4);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setParameters(params);
+        Map<String, Object> paramMap = HomoEfficioWebUtils.getParametersStartingWith(request, "");
+
+        assertEquals("simpleValue1", paramMap.get("simple1"));
+        assertEquals("dot", paramMap.get("l1dot.l2"));
+        assertEquals("squareBracket", paramMap.get("l1.l2"));
+        assertEquals(strArr1, paramMap.get("l1arr"));
+        assertEquals(strArr2, paramMap.get("l1.l2arr"));
+        assertEquals("Withl2", paramMap.get("l1arr[0].l2"));
+        assertEquals(strArr3, paramMap.get("l1arr[0].l2arr"));
+        assertEquals("Withl3", paramMap.get("l1arr[0].l2.l3"));
+        assertEquals("Withl4", paramMap.get("l1arr[0].l2.l3arr[0].l4"));
+        assertEquals(strArr4, paramMap.get("l1arr[0].l2.l3arr[0].l4arr"));
+    }
 
     @Test
     public void object인덱스형_key를_dot형으로_변환() throws Exception {
