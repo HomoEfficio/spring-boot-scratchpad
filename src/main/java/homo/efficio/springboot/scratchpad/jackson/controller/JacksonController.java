@@ -79,13 +79,13 @@ public class JacksonController {
         return ResponseEntity.ok(userInfoWithObjectList);
     }
 
-//    @RequestMapping(value = "/data-binder", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public ResponseEntity<SampleDTO> saveSampleEntity(HttpServletRequest request, SampleDTO dto) {
+//    @RequestMapping(value = "/data-binder", method = RequestMethod.GET)
+//    public ResponseEntity<SampleDTO> saveSampleEntityNotJSON(HttpServletRequest request, SampleDTO dto) {
 //        return ResponseEntity.ok(dto);
 //    }
 
-    @RequestMapping(value = "/data-binder", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SampleDTO> saveSampleEntity(HttpServletRequest request) {
+    @RequestMapping(value = "/data-binder", method = RequestMethod.GET)
+    public ResponseEntity<SampleDTO> saveSampleEntityNotJSON(HttpServletRequest request) {
 
         SampleDTO dto = null;
         try {
@@ -98,4 +98,24 @@ public class JacksonController {
 
         return ResponseEntity.ok(dto);
     }
+
+//    @RequestMapping(value = "/data-binder", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    public ResponseEntity<SampleDTO> saveSampleEntity(HttpServletRequest request, SampleDTO dto) {
+//        return ResponseEntity.ok(dto);
+//    }
+
+//    @RequestMapping(value = "/data-binder", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    public ResponseEntity<SampleDTO> saveSampleEntity(HttpServletRequest request) {
+//
+//        SampleDTO dto = null;
+//        try {
+//            dto = HomoEfficioWebUtils.getDTOFromParamMap(request.getParameterMap(), SampleDTO.class);
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return ResponseEntity.ok(dto);
+//    }
 }

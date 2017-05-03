@@ -44,6 +44,7 @@ public class HomoEfficioWebUtilsTest {
         params.put("l1arr[0][l2][l3]", "Withl3");
         params.put("l1arr[0][l2][l3arr][0][l4]", "Withl4");
         params.put("l1arr[0][l2][l3arr][0][l4arr][]", strArr4);
+        params.put("l1['l2WithSingleQuote'][\"l3WithDoubleQuote\"]", "squareBracketWithQuotes");
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setParameters(params);
@@ -59,6 +60,7 @@ public class HomoEfficioWebUtilsTest {
         assertEquals("Withl3", paramMap.get("l1arr[0].l2.l3"));
         assertEquals("Withl4", paramMap.get("l1arr[0].l2.l3arr[0].l4"));
         assertEquals(strArr4, paramMap.get("l1arr[0].l2.l3arr[0].l4arr"));
+        assertEquals("squareBracketWithQuotes", paramMap.get("l1.l2WithSingleQuote.l3WithDoubleQuote"));
     }
 
     @Test
