@@ -8,10 +8,7 @@ import org.junit.runners.JUnit4;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.util.WebUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,48 +30,93 @@ public class HomoEfficioWebUtilsTest {
         String[] strArr3 = new String[] {"With", "l2"};
         String[] strArr4 = new String[] {"l4", "array"};
 
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new LinkedHashMap<>();
         params.put("simple1", "simpleValue1");
+        params.put("33", "number");
+        params.put("*^-^*", "special1");
+        params.put(";)", "special2");
+        params.put("*^^*[;)]", "special3");
+        params.put("!@#$%^&*()[:{]", "special4");
         params.put("l1dot.l2", "dot");
         params.put("l1[l2]", "squareBracket");
+        params.put("34[22]", "NumberKeyWithSquareBracket1");
+        params.put("35[3b][22]", "NumberKeyWithSquareBracket2");
+        params.put("l1-dot[l-2]", "dash");
         params.put("l1arr[]", strArr1);
-        params.put("l1[l2arr][]", strArr2);
-        params.put("l1arr[0][l2]", "Withl2");
+        params.put("l1[l2_arr][]", strArr2);
+        params.put("l1arr[0]['l2']", "Withl2");
         params.put("l1arr[0][l2arr][]", strArr3);
-        params.put("l1arr[0][l2][l3]", "Withl3");
-        params.put("l1arr[0][l2][l3arr][0][l4]", "Withl4");
-        params.put("l1arr[0][l2][l3arr][0][l4arr][]", strArr4);
-        params.put("l1['l2WithSingleQuote'][\"l3WithDoubleQuote\"]", "squareBracketWithQuotes");
+        params.put("l1arr[0][l2][\"l3\"]", "Withl3");
+        params.put("l1arr[0][\"l2\"]['l3arr'][0][l4]", "Withl4");
+        params.put("l1arr[0][l2][\"l3arr\"][0][l4arr][]", strArr4);
+        params.put("l1arr[0][mom's \"valuable\" key]", "mom's value");
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setParameters(params);
         Map<String, Object> paramMap = HomoEfficioWebUtils.getParametersStartingWith(request, "");
 
         assertEquals("simpleValue1", paramMap.get("simple1"));
+        assertEquals("number", paramMap.get("33"));
+        assertEquals("special1", paramMap.get("*^-^*"));
+        assertEquals("special2", paramMap.get(";)"));
+        assertEquals("special3", paramMap.get("*^^*.;)"));
+        assertEquals("special4", paramMap.get("!@#$%^&*().:{"));
         assertEquals("dot", paramMap.get("l1dot.l2"));
         assertEquals("squareBracket", paramMap.get("l1.l2"));
+        assertEquals("NumberKeyWithSquareBracket1", paramMap.get("34[22]"));
+        assertEquals("NumberKeyWithSquareBracket2", paramMap.get("35.3b[22]"));
+        assertEquals("dash", paramMap.get("l1-dot.l-2"));
         assertEquals(strArr1, paramMap.get("l1arr"));
-        assertEquals(strArr2, paramMap.get("l1.l2arr"));
+        assertEquals(strArr2, paramMap.get("l1.l2_arr"));
         assertEquals("Withl2", paramMap.get("l1arr[0].l2"));
         assertEquals(strArr3, paramMap.get("l1arr[0].l2arr"));
         assertEquals("Withl3", paramMap.get("l1arr[0].l2.l3"));
         assertEquals("Withl4", paramMap.get("l1arr[0].l2.l3arr[0].l4"));
         assertEquals(strArr4, paramMap.get("l1arr[0].l2.l3arr[0].l4arr"));
-        assertEquals("squareBracketWithQuotes", paramMap.get("l1.l2WithSingleQuote.l3WithDoubleQuote"));
+        assertEquals("mom's value", paramMap.get("l1arr[0].mom's \"valuable\" key"));
+    }
+
+    @Test
+    public void object인덱스형_key를_dot형으로_변환1() throws Exception {
+
+        String k = "3a[22]";
+
+        String result =
+                k
+                        .replaceAll("\\['", "[")
+                        .replaceAll("']", "]")
+                        .replaceAll("\\[\"", "[")
+                        .replaceAll("\"]", "]")
+                        .replaceAll("\\[]", "")
+                        .replaceAll("\\[(\\d+)]", "!@#$1!@#")
+                        .replaceAll("\\[", ".")
+                        .replaceAll("]", "")
+                        .replaceAll("!@#(\\d+)!@#", "[$1]");
+
+        Assert.assertThat(result, Matchers.is("3a[22]"));
     }
 
     @Test
     public void object인덱스형_key를_dot형으로_변환() throws Exception {
 
-        String k = "items[0][options][1][a][12][b][abc][c][1234][c1][33][_1][___][99][a33][b3][aa3]";
+        String k = "items[0][options][1][a][12][b][a-b_c-]['c'][1234][\"c1\"][33][_1][_-_][99][^___^][*^^*][3a3][a33][b3][aa-3]";
 
         String result =
-                k.replaceAll("\\[]", "")
-                 .replaceAll("\\[(\\D+)", ".$1")
-                 .replaceAll("]\\[(\\D)", ".$1")
-                 .replaceAll("(\\.\\w+)]", "$1");
+                k
+                        .replaceAll("\\['", "[")
+                        .replaceAll("']", "]")
+                        .replaceAll("\\[\"", "[")
+                        .replaceAll("\"]", "]")
+                        .replaceAll("\\[]", "")
+                        .replaceAll("\\[(\\d+)]", "!@#$1!@#")
+                        .replaceAll("\\[", ".")
+                        .replaceAll("]", "")
+                        .replaceAll("!@#(\\d+)!@#", "[$1]");
+//                        .replaceAll("]\\.", ".")
+//                        .replaceAll("]", "")
+//                        .replaceAll("\\.(\\d+)\\.", "[$1].");
 
-        Assert.assertThat(result, Matchers.is("items[0].options[1].a[12].b.abc.c[1234].c1[33]._1.___[99].a33.b3.aa3"));
+        Assert.assertThat(result, Matchers.is("items[0].options[1].a[12].b.a-b_c-.c[1234].c1[33]._1._-_[99].^___^.*^^*.3a3.a33.b3.aa-3"));
     }
 
     @Test
