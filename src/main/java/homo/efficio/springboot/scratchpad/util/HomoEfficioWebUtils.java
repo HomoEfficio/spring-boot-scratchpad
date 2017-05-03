@@ -115,9 +115,10 @@ public class HomoEfficioWebUtils {
                             .replaceAll("\\[\"", "[")
                             .replaceAll("\"]", "]")
                             .replaceAll("\\[]", "")
-                            .replaceAll("\\[(\\D+)", ".$1")
-                            .replaceAll("]\\[(\\D)", ".$1")
-                            .replaceAll("(\\.[\\w\\-]+)]", "$1");
+                            .replaceAll("\\[(\\d+)]", "!#%@$1%@#!")
+                            .replaceAll("\\[", ".")
+                            .replaceAll("]", "")
+                            .replaceAll("!#%@(\\d+)%@#!", "[$1]");
                     mpvs.addPropertyValue(dotKey, v);
                 }
         );
